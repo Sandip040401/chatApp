@@ -26,8 +26,15 @@ const io = new Server(server,{
 io.on('connection',(socket)=>{
     console.log('Connection is establised');
 
+    socket.on('join',(data)=>{
+        socket.username = data;
+    })
     socket.on('new-message',(message)=>{
-        socket.broadcast.emit('broadcast-message',message);
+        let userMessage = {
+            username: socket.username,
+            message: message
+        }
+        socket.broadcast.emit('broadcast-message',userMessage);
     })
 
     socket.on('disconnect',()=>{

@@ -21,6 +21,8 @@
     <script>
         // Socket code for js
         const socket = io.connect('http://localhost:3500');
+        const username = prompt('Enter your name')
+        socket.emit('join',username)
 
         const messageInput = document.getElementById('message-input');
         const messageList = document.getElementById('message-list');
@@ -32,15 +34,15 @@
                 socket.emit('new-message',message);
 
                 const messageElement = document.createElement('div')
-                messageElement.innerText = message;
+                messageElement.innerText =username + ": "+ message;
                 messageList.appendChild(messageElement)
                 messageInput.value = "";
             }
         })
 
-        socket.on('broadcast-message',(message)=>{
+        socket.on('broadcast-message',(userMessage)=>{
             const messageElement = document.createElement('div')
-            messageElement.innerText = message;
+            messageElement.innerText = userMessage.username + ": " + userMessage.message;
             messageList.appendChild(messageElement)
         })
     </script>
