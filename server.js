@@ -25,7 +25,7 @@ const io = new Server(server,{
 
 io.on('connection',(socket)=>{
     console.log('Connection is establised');
-    Socket.on('disconnect',()=>{
+    socket.on('disconnect',()=>{
         console.log('Connection is disconected');
     })
 })
