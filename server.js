@@ -2,7 +2,8 @@ import express from 'express'
 import cors from 'cors'
 import {Server} from 'socket.io'
 import http from 'http'
-
+import { connect } from './config.js'
+import { ChatModel } from './chat/chat.schema.js'
 
 
 const app = express()
@@ -28,12 +29,27 @@ io.on('connection',(socket)=>{
 
     socket.on('join',(data)=>{
         socket.username = data;
+        ChatModel.find().sort({timestamp:1}).limit(50)
+            .then(messages=>{
+                socket.emit('load-messages',messages)
+            }).catch(err=>{
+                console.log(err);
+            })
     })
+    
     socket.on('new-message',(message)=>{
         let userMessage = {
             username: socket.username,
             message: message
         }
+
+        const newChat = new ChatModel({
+            username: socket.username,
+            message:message,
+            timestamp: new Date()
+        })
+        newChat.save();
+
         socket.broadcast.emit('broadcast-message',userMessage);
     })
 
@@ -44,4 +60,5 @@ io.on('connection',(socket)=>{
 
 server.listen(3500,()=>{
     console.log('Server is listening on 3500');
+    connect();
 })

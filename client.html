@@ -40,6 +40,14 @@
             }
         })
 
+        socket.on('load-messages',(messages)=>{
+            messages.forEach(message=>{
+                const messageElement = document.createElement('div')
+                messageElement.innerText = new Date(message.timestamp).toLocaleString()+ " " + message.username + ": " + message.message;
+                messageList.appendChild(messageElement)
+            })
+        })
+        
         socket.on('broadcast-message',(userMessage)=>{
             const messageElement = document.createElement('div')
             messageElement.innerText = userMessage.username + ": " + userMessage.message;
